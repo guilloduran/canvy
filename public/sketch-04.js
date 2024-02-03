@@ -11018,101 +11018,173 @@ Better rank ordering method by Stefan Gustavson in 2012.
 }));
 
 },{}],9:[function(require,module,exports){
-const canvasSketch = require('canvas-sketch');
-const random = require('canvas-sketch-util/random');
-const math = require('canvas-sketch-util/math');
-const Tweakpane = require('tweakpane');
+const canvasSketch = require("canvas-sketch");
+const random = require("canvas-sketch-util/random");
+const math = require("canvas-sketch-util/math");
+const Tweakpane = require("tweakpane");
 
 const settings = {
-	dimensions: [ 1080, 1080 ],
-	animate: true
+  dimensions: [1080, 1080],
+  animate: true,
 };
 
 const params = {
-	cols: 10,
-	rows: 10,
-	scaleMin: 1,
-	scaleMax: 30,
-	freq: 0.001,
-	amp: 0.2,
-	frame: 0,
-	animate: true,
-	lineCap: 'butt',
+  cols: 10,
+  rows: 10,
+  scaleMin: 1,
+  scaleMax: 30,
+  freq: 0.001,
+  amp: 0.2,
+  frame: 0,
+  animate: true,
+  lineCap: "butt",
+  //lines
+  lines: "rgb(255, 255, 255)",
+  gradient: false,
+  gradientA: "rgb(0, 0, 0)",
+  gradientB: "rgb(255, 255, 255)",
+  gradientSlider: 0,
+  //bg
+  background: "rgb(0, 0, 0)",
+  radialGradient: false,
+  bgGradientA: "rgb(0, 0, 0)",
+  bgGradientB: "rgb(255, 255, 255)",
+  custom: false,
+  x0: 0,
+  y0: 0,
+  r0: 0,
+  x1: 0,
+  y1: 0,
+  r1: 500,
 };
 
 const sketch = () => {
-	return ({ context, width, height, frame }) => {
-		context.fillStyle = 'white';
-		context.fillRect(0, 0, width, height);
+  return ({ context, width, height, frame }) => {
+    const cols = params.cols;
+    const rows = params.rows;
+    const numCells = cols * rows;
 
-		const cols = params.cols;
-		const rows = params.rows;
-		const numCells = cols * rows;
+    const gridw = width * 0.8;
+    const gridh = height * 0.8;
+    const cellw = gridw / cols;
+    const cellh = gridh / rows;
+    const margx = (width - gridw) * 0.5;
+    const margy = (height - gridh) * 0.5;
 
-		const gridw = width  * 0.8;
-		const gridh = height * 0.8;
-		const cellw = gridw / cols;
-		const cellh = gridh / rows;
-		const margx = (width  - gridw) * 0.5;
-		const margy = (height - gridh) * 0.5;
+    const bgGradient = context.createRadialGradient(
+      width / 2,
+      height / 2,
+      0,
+      width / 2,
+      height / 2,
+      width
+    );
+    bgGradient.addColorStop(0, params.bgGradientA);
+    bgGradient.addColorStop(1, params.bgGradientB);
 
-		for (let i = 0; i < numCells; i++) {
-			const col = i % cols;
-			const row = Math.floor(i / cols);
+    const bgGradientCustom = context.createRadialGradient(
+      params.x0,
+      params.y0,
+      params.r0,
+      params.x1,
+      params.y1,
+      params.r1
+    );
+    bgGradientCustom.addColorStop(0, params.bgGradientA);
+    bgGradientCustom.addColorStop(1, params.bgGradientB);
 
-			const x = col * cellw;
-			const y = row * cellh;
-			const w = cellw * 0.8;
-			const h = cellh * 0.8;
+    params.radialGradient
+      ? (context.fillStyle = params.custom ? bgGradientCustom : bgGradient)
+      : params.background;
+    //context.fillStyle = bgGradientCustom;
+    context.fillRect(0, 0, width, height);
+    for (let i = 0; i < numCells; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
 
-			const f = params.animate ? frame : params.frame;
+      const x = col * cellw;
+      const y = row * cellh;
+      const w = cellw * 0.8;
+      const h = cellh * 0.8;
 
-			// const n = random.noise2D(x + frame * 10, y, params.freq);
-			const n = random.noise3D(x, y, f * 10, params.freq);
+      const f = params.animate ? frame : params.frame;
 
+      //const n = random.noise2D(x + frame * 10, y, params.freq);
+      const n = random.noise3D(x, y, f * 10, params.freq);
 
-			const angle = n * Math.PI * params.amp;
-			
-			// const scale = (n + 1) / 2 * 30;
-			// const scale = (n * 0.5 + 0.5) * 30;
-			const scale = math.mapRange(n, -1, 1, params.scaleMin, params.scaleMax);
+      const angle = n * Math.PI * params.amp;
 
-			context.save();
-			context.translate(x, y);
-			context.translate(margx, margy);
-			context.translate(cellw * 0.5, cellh * 0.5);
-			context.rotate(angle);
+      // const scale = (n + 1) / 2 * 30;
+      // const scale = (n * 0.5 + 0.5) * 30;
+      const scale = math.mapRange(n, -1, 1, params.scaleMin, params.scaleMax);
 
-			context.lineWidth = scale;
-			context.lineCap = params.lineCap;
+      context.save();
+      context.translate(x, y);
+      context.translate(margx, margy);
+      context.translate(cellw * 0.5, cellh * 0.5);
+      context.rotate(angle);
 
-			context.beginPath();
-			context.moveTo(w * -0.5, 0);
-			context.lineTo(w *  0.5, 0);
-			context.stroke();
+      const fill = context.createLinearGradient(
+        w * -0.5,
+        0,
+        params.gradientSlider,
+        0
+      );
+      fill.addColorStop(0.2, params.gradientA);
+      fill.addColorStop(0.8, params.gradientB);
 
-			context.restore();
-		}
+      context.strokeStyle = params.gradient ? fill : params.lines;
+      context.lineWidth = scale;
+      context.lineCap = params.lineCap;
 
-	};
+      context.beginPath();
+      context.moveTo(w * -0.5, 0);
+      context.lineTo(w * 0.5, 0);
+      context.stroke();
+
+      context.restore();
+    }
+  };
 };
 
 const createPane = () => {
-	const pane = new Tweakpane.Pane();
-	let folder;
+  const pane = new Tweakpane.Pane();
+  let folder;
 
-	folder = pane.addFolder({ title: 'Grid '});
-	folder.addInput(params, 'lineCap', { options: { butt: 'butt', round: 'round', square: 'square' }});
-	folder.addInput(params, 'cols', { min: 2, max: 50, step: 1 });
-	folder.addInput(params, 'rows', { min: 2, max: 50, step: 1 });
-	folder.addInput(params, 'scaleMin', { min: 1, max: 100 });
-	folder.addInput(params, 'scaleMax', { min: 1, max: 100 });
+  folder = pane.addFolder({ title: "Grid " });
+  folder.addInput(params, "lineCap", {
+    options: { butt: "butt", round: "round", square: "square" },
+  });
 
-	folder = pane.addFolder({ title: 'Noise' });
-	folder.addInput(params, 'freq', { min: -0.01, max: 0.01 });
-	folder.addInput(params, 'amp', { min: 0, max: 1 });
-	folder.addInput(params, 'animate');
-	folder.addInput(params, 'frame', { min: 0, max: 999 });
+  folder.addInput(params, "cols", { min: 2, max: 50, step: 1 });
+  folder.addInput(params, "rows", { min: 2, max: 50, step: 1 });
+  folder.addInput(params, "scaleMin", { min: 1, max: 100 });
+  folder.addInput(params, "scaleMax", { min: 1, max: 100 });
+
+  folder = pane.addFolder({ title: "Noise" });
+  folder.addInput(params, "freq", { min: -0.01, max: 0.01 });
+  folder.addInput(params, "amp", { min: 0, max: 1 });
+  folder.addInput(params, "animate");
+  folder.addInput(params, "frame", { min: 0, max: 999 });
+
+  folder = pane.addFolder({ title: "Stroke Color" });
+  folder.addInput(params, "lines");
+  folder.addInput(params, "gradient");
+  folder.addInput(params, "gradientA");
+  folder.addInput(params, "gradientB");
+  folder.addInput(params, "gradientSlider", { min: 1, max: 100 });
+  folder = pane.addFolder({ title: "Background Color" });
+  folder.addInput(params, "background");
+  folder.addInput(params, "radialGradient");
+  folder.addInput(params, "bgGradientA");
+  folder.addInput(params, "bgGradientB");
+  folder.addInput(params, "custom");
+  folder.addInput(params, "x0", { min: 0, max: 999 });
+  folder.addInput(params, "y0", { min: 0, max: 999 });
+  folder.addInput(params, "r0", { min: 0, max: 999 });
+  folder.addInput(params, "x1", { min: 0, max: 999 });
+  folder.addInput(params, "y1", { min: 0, max: 999 });
+  folder.addInput(params, "r1", { min: 0, max: 999 });
 };
 
 createPane();
