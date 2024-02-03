@@ -11095,7 +11095,7 @@ const sketch = () => {
 
     params.radialGradient
       ? (context.fillStyle = params.custom ? bgGradientCustom : bgGradient)
-      : params.background;
+      : (context.fillStyle = params.background);
     //context.fillStyle = bgGradientCustom;
     context.fillRect(0, 0, width, height);
     for (let i = 0; i < numCells; i++) {
