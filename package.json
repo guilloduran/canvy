@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:sketch": "canvas-sketch-cli sketches/sketch-06.js --build --output=public/letry --stream",
-    "watch:sketch": "canvas-sketch-cli sketches/sketch-06.js --output=public/letry",
+    "build:sketch": "canvas-sketch-cli sketches/letry.js --build --output=public/letry --stream",
+    "watch:sketch": "canvas-sketch-cli sketches/orca.js --output=public/letry",
     "build:all": "npm run build:sketch && next build",
     "dev:sketch": "concurrently \"npm run dev\" \"npm run watch:sketch\""
   },
@@ -16,9 +16,13 @@
     "canvas-sketch": "^0.7.7",
     "canvas-sketch-cli": "^1.11.21",
     "canvas-sketch-util": "^1.10.0",
+    "color-interpolate": "^1.0.5",
+    "colormap": "^2.3.2",
+    "eases": "^1.0.8",
     "next": "14.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "riso-colors": "^1.0.1",
     "tweakpane": "^3.1.9"
   },
   "devDependencies": {

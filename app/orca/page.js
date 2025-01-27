@@ -21,7 +21,7 @@ export default function Orca() {
       };
 
       const script = document.createElement("script");
-      script.src = "sketch-04.js";
+      script.src = "orca.js";
       script.async = true;
       scriptOutputRef.current.appendChild(script);
 
@@ -36,10 +36,12 @@ export default function Orca() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen" ref={containerRef}>
-      <p>Ctrl + s to save</p>
-      <div id="script-output" ref={scriptOutputRef} className="mx-auto ">
-      </div>
+    <div
+      className="flex flex-col items-center justify-center"
+      ref={containerRef}
+      style={{ height: 'calc(100vh - 56px)' }}
+    >
+      <div id="script-output" ref={scriptOutputRef} className="mx-auto"></div>
     </div>
   );
 }
