@@ -21,7 +21,7 @@ export default function Orca() {
       };
 
       const script = document.createElement("script");
-      script.src = "orca.js";
+      script.src = "/orca.js";
       script.async = true;
       scriptOutputRef.current.appendChild(script);
 

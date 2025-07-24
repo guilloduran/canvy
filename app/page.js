@@ -17,7 +17,7 @@ export default function Home() {
       };
 
       const script = document.createElement("script");
-      script.src = "network.js";
+      script.src = "/network.js";
       script.async = true;
       scriptOutputRef.current.appendChild(script);
 
