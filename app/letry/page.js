@@ -17,7 +17,7 @@ export default function LetryPage() {
             };
 
             const script = document.createElement("script");
-            script.src = "letry.js";
+            script.src = "/letry.js";
             script.async = true;
             scriptOutputRef.current.appendChild(script);
 
