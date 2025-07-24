@@ -32,13 +32,13 @@ export default function Home() {
 
   return (
     <div
-      className="flex  flex-col items-center justify-center h-full"
+      className="flex flex-col items-center justify-center h-full"
       ref={containerRef}
     >
       <div
         id="script-output"
         ref={scriptOutputRef}
-        className="mx-auto  w-full h-full flex justify-center"
+        className="mx-auto w-full h-full flex justify-center"
       ></div>
     </div>
   );
