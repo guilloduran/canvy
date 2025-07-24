@@ -15,6 +15,9 @@ export default function Navbar() {
           <Link href="/letry" className="hover:text-gray-300">
             letry
           </Link>
+          <Link href="/particles" className="hover:text-gray-300">
+            particles
+          </Link>
         </div>
       </div>
     </nav>
