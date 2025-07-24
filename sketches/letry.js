@@ -11,8 +11,7 @@ let renderedCanvas = null;
 const settings = {
 	dimensions: [1080, 1080],
 	animate: true,
-	duration: 4,
-	fps: 60
+        fps: 60
 };
 
 // Parameters for Tweakpane and sketch
@@ -103,18 +102,36 @@ const getGlyph = (v) => {
 
 // Function to calculate animation angle
 const getAnimationAngle = (x, y, frame, width, height) => {
-	// Calculate the angle from the center of the canvas to the point (x, y)
-	const centerX = width / 2;
-	const centerY = height / 2;
-	const dx = x - centerX;
-	const dy = y - centerY;
-	const baseAngle = Math.atan2(dy, dx); // Angle in radians
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const dx = x - centerX;
+        const dy = y - centerY;
 
-	// Add a rotation that changes with each frame to animate
-	const rotationSpeed = 0.01; // Adjust for faster or slower rotation
-	const animatedRotation = frame * rotationSpeed;
+        let angle = Math.atan2(dy, dx);
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-	return baseAngle + animatedRotation;
+        switch (params.pattern) {
+                case 'noise':
+                        angle += random.noise3D(x, y, frame, params.freq) * Math.PI * params.amp;
+                        break;
+                case 'wave':
+                        angle += Math.sin((x + y) * params.freq + frame * params.freq) * params.amp;
+                        break;
+                case 'spiral':
+                        angle += (dist * params.freq + frame * params.freq) * params.amp;
+                        break;
+                case 'ripple':
+                        angle += Math.sin(dist * params.freq - frame * params.freq) * params.amp;
+                        break;
+                case 'orbit':
+                        angle = frame * params.freq + Math.atan2(dy, dx);
+                        break;
+                default:
+                        break;
+        }
+
+        const rotationSpeed = 0.01;
+        return angle + frame * rotationSpeed;
 };
 
 // Sketch function
@@ -271,16 +288,20 @@ const createPane = () => {
 	// Animation Settings
 	const animationFolder = pane.addFolder({ title: "Animation" });
 	const animateControl = animationFolder.addInput(params, 'animate', { label: 'Animate' });
-	animationFolder.addInput(params, 'pattern', {
-		label: 'Pattern',
-		options: {
-			'Noise': 'noise',
-			'Wave': 'wave',
-			'Spiral': 'spiral',
-			'Ripple': 'ripple',
-			'Orbit': 'orbit'
-		}
-	});
+        animationFolder.addInput(params, 'pattern', {
+                label: 'Pattern',
+                options: {
+                        'Noise': 'noise',
+                        'Wave': 'wave',
+                        'Spiral': 'spiral',
+                        'Ripple': 'ripple',
+                        'Orbit': 'orbit'
+                }
+        }).on('change', () => {
+                if (manager && manager.render) {
+                        manager.render();
+                }
+        });
 	animationFolder.addInput(params, 'freq', { min: -0.01, max: 0.01, step: 0.0001, label: 'Frequency' });
 	animationFolder.addInput(params, 'amp', { min: 0, max: 1, step: 0.01, label: 'Amplitude' });
 	animationFolder.addInput(params, 'frame', { min: 0, max: 999, step: 1, label: 'Frame' });
