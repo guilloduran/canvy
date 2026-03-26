@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Canvy
+
+Interactive generative art sketches built with Canvas 2D, React, and Next.js. Each sketch runs in real-time with tweakable parameters and PNG export.
+
+## Sketches
+
+| Sketch | Description |
+|--------|-------------|
+| **Network** | Particle system with physics-based connections and mouse interaction |
+| **Letry** | ASCII art generator with animated glyphs and color cycling |
+| **Orca** | Grid-based line patterns driven by noise fields |
+| **Flow Field** | Particles tracing through Perlin noise vector fields |
+| **Glitch Grid** | Randomized grid tiles with digital glitch aesthetics |
+| **Waveform** | Layered sine waves forming organic terrain landscapes |
+| **String Art** | Mathematical string connections between geometric shapes |
+| **Moire** | Overlapping ring patterns creating interference effects |
+| **Radial Pulse** | Concentric rings with noise-modulated pulsing rhythms |
+| **Iso Cubes** | Isometric 3D cube grid animated with Perlin noise |
+| **Cellular** | Conway's Game of Life and other cellular automata rules |
+
+## Features
+
+- **Real-time controls** via [Leva](https://github.com/pmndrs/leva) — tweak colors, sizes, speeds, and modes on the fly
+- **PNG export** at configurable resolution (up to 4096x4096)
+- **Animated previews** on the homepage
+- **Canvas 2D rendering** — no WebGL required
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org) 16 (App Router)
+- [React](https://react.dev) 19
+- [Tailwind CSS](https://tailwindcss.com) 4
+- [Leva](https://github.com/pmndrs/leva) for parameter GUI
+- [canvas-sketch-util](https://github.com/mattdesl/canvas-sketch-util) for noise and math utilities
+- TypeScript
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to browse sketches.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  components/    # SketchCanvas, SketchCard, Navbar
+  hooks/         # useAnimationLoop, useCanvasResize, useExportPNG, useMousePosition
+  lib/           # Shared math utilities and types
+  sketches/      # Pure draw functions and default params for each sketch
+  <sketch>/      # Route pages (one per sketch)
+  page.tsx       # Homepage with animated preview cards
+```
 
-## Learn More
+## Adding a New Sketch
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a draw function in `app/sketches/yoursketch.ts` exporting `drawYourSketch` and `defaultYourSketchParams`
+2. Create a route page at `app/your-sketch/page.tsx` using the same pattern as existing sketches
+3. Add a navbar link in `app/components/Navbar.tsx`
+4. Add a preview card in `app/page.tsx`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
